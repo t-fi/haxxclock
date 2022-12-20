@@ -16,9 +16,7 @@ extern "C" void app_main(void) {
 
         shared_ptr<SPIDevice> spi_dev = master.create_dev(CS(5), Frequency::MHz(1));
 
-        /* This line may throw an exception if the pin number is invalid.
-         * Alternatively to 4, choose another output-capable pin. */
-        GPIO_Output gpio(GPIONum(2));
+        GPIO_Output onboard_led_gpio(GPIONum(2));
 
         while (true) {
             // Connect pin 23 to pin 19 to check if SPI communication works.
@@ -31,10 +29,10 @@ extern "C" void app_main(void) {
             printf("\n");
 
             printf("LED ON\n");
-            gpio.set_high();
+            onboard_led_gpio.set_high();
             this_thread::sleep_for(std::chrono::milliseconds(1000));
             printf("LED OFF\n");
-            gpio.set_low();
+            onboard_led_gpio.set_low();
             this_thread::sleep_for(std::chrono::milliseconds(1000));
         }
 
@@ -45,5 +43,4 @@ extern "C" void app_main(void) {
         printf("SPI exception occurred: %s\n", esp_err_to_name(e.error));
         printf("stopping.\n");
     }
-
 }
