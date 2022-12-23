@@ -11,9 +11,9 @@ std::vector<uint8_t> build_led_frame(led_brightness , led_value value) {
     //0 1 2 3 4 5 6 7
     //b b r r g g b b
     // for now only use the lower bits to limit power and be generally lazy
-    frame[3] = value.r;
-    frame[5] = value.g;
-    frame[7] = value.b;
+    frame[2] = value.r;
+    frame[4] = value.g;
+    frame[6] = value.b;
 
     // use SPI_SWAP_DATA in the future for 16 bit LSB MSB conversion
 

@@ -18,7 +18,11 @@ namespace {
 
     void send_led_color(led_value value, const shared_ptr<SPIDevice> &spi_dev) {
         spi_dev->transfer(start_frame).get();
-        spi_dev->transfer(build_led_frame({255, 255, 255}, value)).get();
+        led_value black{};
+        for (int i = 0; i < 34; ++i) {
+            spi_dev->transfer(build_led_frame({255, 255, 255}, value)).get();
+            spi_dev->transfer(build_led_frame({255, 255, 255}, black)).get();
+        }
         spi_dev->transfer(end_frame).get();
     }
 }
