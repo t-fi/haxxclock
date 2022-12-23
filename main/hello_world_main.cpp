@@ -1,13 +1,30 @@
 #include <thread>
 #include "gpio_cxx.hpp"
 #include "spi_host_cxx.hpp"
+#include "HD108_driver.h"
 
 using namespace idf;
 using namespace std;
 
+namespace {
+    void cycle_onboard_led(GPIO_Output &onboard_led_gpio) {
+        printf("LED ON\n");
+        onboard_led_gpio.set_high();
+        this_thread::sleep_for(chrono::milliseconds(1000));
+        printf("LED OFF\n");
+        onboard_led_gpio.set_low();
+        this_thread::sleep_for(chrono::milliseconds(1000));
+    }
+
+    void send_led_color(led_value value, const shared_ptr<SPIDevice> &spi_dev) {
+        spi_dev->transfer(start_frame).get();
+        spi_dev->transfer(build_led_frame({255, 255, 255}, value)).get();
+        spi_dev->transfer(end_frame).get();
+    }
+}
+
+
 extern "C" void app_main(void) {
-    /* The functions of GPIO_Output throws exceptions in case of parameter errors or if there are underlying driver
-       errors. */
     try {
         SPIMaster master(SPINum(2), // 2 means SPI3
                          MOSI(23),
@@ -18,22 +35,13 @@ extern "C" void app_main(void) {
 
         GPIO_Output onboard_led_gpio(GPIONum(2));
 
+        uint8_t i = 0;
         while (true) {
-            // Connect pin 23 to pin 19 to check if SPI communication works.
-            // 1. It should echo back the original message
-            // 2. It should break and print empty things once the connection is severed
-            printf("SPI full cicle:\n");
-            for (auto &&value: spi_dev->transfer({'h', 'a', 'l', 'l', 'o'}).get()) {
-                printf("%c, ", value);
-            }
-            printf("\n");
-
-            printf("LED ON\n");
-            onboard_led_gpio.set_high();
-            this_thread::sleep_for(std::chrono::milliseconds(1000));
-            printf("LED OFF\n");
-            onboard_led_gpio.set_low();
-            this_thread::sleep_for(std::chrono::milliseconds(1000));
+            i++;
+            led_value v{i, static_cast<uint8_t>(i * 2), static_cast<uint8_t>(i * i)};
+            printf("sending LED value: %03u %03u %03u\n", v.r, v.g, v.b);
+            send_led_color(v, spi_dev);
+            cycle_onboard_led(onboard_led_gpio);
         }
 
     } catch (GPIOException &e) {
