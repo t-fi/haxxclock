@@ -26,10 +26,10 @@ std::vector<led_value> get_digit_frame(char digit) {
     return values;
 }
 
-std::vector<led_value> get_clock_frame(struct tm* time) {
-    printf("time: %02d:%02d:%02d\n", time->tm_hour, time->tm_min, time->tm_sec);
-    uint32_t sec_of_day = time->tm_hour * 3600 + time->tm_min * 60 + time->tm_sec;
-    uint32_t hex_sec_of_day = sec_of_day * 1.318359375;
+std::vector<led_value> get_clock_frame(struct tm* time, suseconds_t microseconds) {
+    float sec_of_day = (float)(time->tm_hour * 3600 + time->tm_min * 60 + time->tm_sec) + microseconds * 1e-6;
+    printf("seconds of day: %f\n", sec_of_day);
+    uint32_t hex_sec_of_day = sec_of_day / 1.318359375;
     printf("hex sec of day: %x\n", hex_sec_of_day);
     std::vector<char> buffer(5);
     snprintf(buffer.data(), 5, "%X", hex_sec_of_day);

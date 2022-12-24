@@ -58,7 +58,7 @@ extern "C" void app_main(void) {
             tzset();
             gettimeofday(&tv_now, &time_info);
             struct tm *local_time = std::localtime(&tv_now.tv_sec);
-            std::vector<led_value> digits = get_clock_frame(local_time);
+            std::vector<led_value> digits = get_clock_frame(local_time, tv_now.tv_usec);
             send_led_color(digits, spi_dev);
 
             this_thread::sleep_for(chrono::milliseconds(50));
