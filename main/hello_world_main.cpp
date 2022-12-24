@@ -1,52 +1,68 @@
+#include <time.h>
 #include <thread>
 #include "gpio_cxx.hpp"
 #include "spi_host_cxx.hpp"
 #include "HD108_driver.h"
+#include "segment_frame_generator.h"
+#include "esp_wifi.h"
+#include "nvs_flash.h"
+#include "init_wifi.h"
+#include "lwip/apps/sntp.h"
 
 using namespace idf;
+
 using namespace std;
 
 namespace {
-    void cycle_onboard_led(GPIO_Output &onboard_led_gpio) {
-        printf("LED ON\n");
-        onboard_led_gpio.set_high();
-        this_thread::sleep_for(chrono::milliseconds(20));
-        printf("LED OFF\n");
-        onboard_led_gpio.set_low();
-        this_thread::sleep_for(chrono::milliseconds(20));
+    void init_nvm() {
+        esp_err_t ret = nvs_flash_init();
+        if (ret == ESP_ERR_NVS_NO_FREE_PAGES || ret == ESP_ERR_NVS_NEW_VERSION_FOUND) {
+            ESP_ERROR_CHECK(nvs_flash_erase());
+            ret = nvs_flash_init();
+        }
+        ESP_ERROR_CHECK(ret);
     }
 
-    void send_led_color(led_value value, const shared_ptr<SPIDevice> &spi_dev) {
+    void send_led_color(std::vector<led_value>& values, const shared_ptr<SPIDevice> &spi_dev) {
         spi_dev->transfer(start_frame).get();
-        for (int i = 0; i < 34; ++i) {
-            spi_dev->transfer(build_led_frame(value)).get();
-            spi_dev->transfer(build_led_frame(black)).get();
+        for (int i = 0; i < values.size(); ++i) {
+            led_value v = values[i];
+//            printf("sending LED value: %03u %03u %03u\n", v.r, v.g, v.b);
+            spi_dev->transfer(build_led_frame(v)).get();
         }
         spi_dev->transfer(end_frame).get();
     }
 }
 
-
 extern "C" void app_main(void) {
     try {
-        SPIMaster master(SPINum(2), // 2 means SPI3
-                         MOSI(23),
-                         MISO(19),
-                         SCLK(18));
+        SPIMaster master(
+                SPINum(2), // 2 means SPI3
+                MOSI(23),
+                MISO(19),
+                SCLK(18)
+        );
 
         shared_ptr<SPIDevice> spi_dev = master.create_dev(CS(5), Frequency::MHz(1));
+        init_nvm();
 
-        GPIO_Output onboard_led_gpio(GPIONum(2));
+        wifi_init_sta();
+        sntp_setoperatingmode(SNTP_OPMODE_POLL);
+        sntp_setservername(0, "pool.ntp.org");
+        sntp_init();
 
-        uint16_t i = 0;
         while (true) {
-            i++;
-            led_value v{i, i, i};
-            printf("sending LED value: %03u %03u %03u\n", v.r, v.g, v.b);
-            send_led_color(v, spi_dev);
-            cycle_onboard_led(onboard_led_gpio);
-        }
+            struct timeval tv_now;
+            struct tm time_info;
+            setenv("TZ", "GMT-1", 1);
+            tzset();
+            gettimeofday(&tv_now, &time_info);
+            struct tm *local_time = std::localtime(&tv_now.tv_sec);
+            std::vector<led_value> digits = get_clock_frame(local_time);
+            send_led_color(digits, spi_dev);
 
+            this_thread::sleep_for(chrono::milliseconds(50));
+        }
     } catch (GPIOException &e) {
         printf("GPIO exception occurred: %s\n", esp_err_to_name(e.error));
         printf("stopping.\n");
