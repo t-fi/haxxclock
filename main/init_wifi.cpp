@@ -15,8 +15,8 @@
    If you'd rather not, just change the below entries to strings with
    the config you want - ie #define EXAMPLE_WIFI_SSID "mywifissid"
 */
-#define EXAMPLE_ESP_WIFI_SSID "FRITZ!Box 6660 Cable BZ"
-#define EXAMPLE_ESP_WIFI_PASS "8403978515593852"
+#define EXAMPLE_ESP_WIFI_SSID "FRITZ!Box 7490"
+#define EXAMPLE_ESP_WIFI_PASS "Gu1LdW4R5"
 #define EXAMPLE_ESP_MAXIMUM_RETRY  20
 
 #if CONFIG_ESP_WIFI_AUTH_OPEN

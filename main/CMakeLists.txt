@@ -4,6 +4,7 @@ idf_component_register(
         "HD108_driver.cpp"
         "segment_frame_generator.cpp"
         "init_wifi.cpp"
+        "http_server.cpp"
         INCLUDE_DIRS
         "")
 

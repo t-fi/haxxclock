@@ -8,6 +8,7 @@
 #include "nvs_flash.h"
 #include "init_wifi.h"
 #include "lwip/apps/sntp.h"
+#include "http_server.h"
 
 using namespace idf;
 
@@ -27,7 +28,6 @@ namespace {
         spi_dev->transfer(start_frame).get();
         for (int i = 0; i < values.size(); ++i) {
             led_value v = values[i];
-//            printf("sending LED value: %03u %03u %03u\n", v.r, v.g, v.b);
             spi_dev->transfer(build_led_frame(v)).get();
         }
         spi_dev->transfer(end_frame).get();
@@ -44,12 +44,16 @@ extern "C" void app_main(void) {
         );
 
         shared_ptr<SPIDevice> spi_dev = master.create_dev(CS(5), Frequency::MHz(1));
+
         init_nvm();
 
         wifi_init_sta();
+
         sntp_setoperatingmode(SNTP_OPMODE_POLL);
         sntp_setservername(0, "pool.ntp.org");
         sntp_init();
+
+        start_webserver();
 
         while (true) {
             struct timeval tv_now;
@@ -61,7 +65,7 @@ extern "C" void app_main(void) {
             std::vector<led_value> digits = get_clock_frame(local_time, tv_now.tv_usec);
             send_led_color(digits, spi_dev);
 
-            this_thread::sleep_for(chrono::milliseconds(50));
+            this_thread::sleep_for(chrono::milliseconds(500));
         }
     } catch (GPIOException &e) {
         printf("GPIO exception occurred: %s\n", esp_err_to_name(e.error));

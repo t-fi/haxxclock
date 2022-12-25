@@ -12,6 +12,7 @@ std::vector<uint8_t> build_led_frame(led_value value) {
 
     // 0 1 2 3 4 5 6 7
     // b b r r g g b b
+    // need to change endianess
     frame[2] = (uint8_t)(value.r >> 8 & 0x00FF);
     frame[3] = (uint8_t)(value.r & 0x00FF);
     frame[4] = (uint8_t)(value.g >> 8 & 0x00FF);
