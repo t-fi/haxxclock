@@ -1,11 +1,28 @@
 #include <ctime>
 #include <cstdio>
+#include <sstream>
+#include <ios>
 #include "segment_frame_generator.h"
+
+led_value led_color = {16536, 16536, 16536};
 
 void add_segment(std::vector<led_value>& values, int leds, led_value color) {
     for (int i = 0; i < leds; ++i) {
         values.push_back(color);
     }
+}
+
+void set_color(char *color) {
+    int value = 0;
+    std::stringstream ss;
+    ss << std::hex << color;
+    ss >> value;
+
+    led_color = {
+            .r = (uint16_t) (((value >> 16) & 0x0000FF) << 8),
+            .g = (uint16_t) (((value >> 8) & 0x0000FF) << 8),
+            .b = (uint16_t) ((value & 0x0000FF) << 8)
+    };
 }
 
 std::vector<led_value> get_digit_frame(char digit) {
@@ -15,7 +32,7 @@ std::vector<led_value> get_digit_frame(char digit) {
 
     for (int i = 0; i < 8; ++i) {
         if (segments & mask) {
-            add_segment(values, 5, led_value{16536, 16536, 16536});
+            add_segment(values, 5, led_color);
         } else {
             add_segment(values, 5, led_value{0, 0, 0});
         }

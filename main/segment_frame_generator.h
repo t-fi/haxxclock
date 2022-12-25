@@ -107,5 +107,6 @@ const uint8_t seven_segment_ascii[96] = {
         0x00, /* (del) */
 };
 
+void set_color(char* color);
 std::vector<led_value> get_digit_frame(char digit);
 std::vector<led_value> get_clock_frame(struct tm* time, suseconds_t microseconds);

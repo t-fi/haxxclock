@@ -2,6 +2,7 @@
 #include <esp_system.h>
 #include <sys/param.h>
 #include "esp_tls_crypto.h"
+#include "segment_frame_generator.h"
 #include <esp_http_server.h>
 
 // todo: refactor into file
@@ -38,8 +39,9 @@ esp_err_t post_handler(httpd_req_t *req)
     }
 
     char color[16];
-    memcpy(color, &content[9], 12);
-    color[12] = '\0';
+    memcpy(color, &content[9], 6); // todo: change to 16 bit
+    color[6] = '\0';
+    set_color(color);
 
     httpd_resp_send(req, "", HTTPD_RESP_USE_STRLEN);
     return ESP_OK;
