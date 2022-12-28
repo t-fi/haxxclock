@@ -7,8 +7,12 @@ std::vector<uint8_t> build_led_frame(led_value value) {
 
     // https://www.reddit.com/r/FastLED/comments/jq646t/debugging_new_16bit_strands_hd108_rgb_leds/
     // reddit says this is (1)(5bit)(5bit)(5bit) brightnesses
-    frame[0] = 0xFF;
-    frame[1] = 0xFF;
+
+    // setting the global brightness to 00011 like this:
+    // 1 [...] [.|..] [...]
+    // 1 00011 00|011 00011
+    frame[0] = 0b10001100;
+    frame[1] = 0b01100011;
 
     // 0 1 2 3 4 5 6 7
     // b b r r g g b b
