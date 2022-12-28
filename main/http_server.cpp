@@ -6,16 +6,44 @@
 #include <esp_http_server.h>
 
 // todo: refactor into file
-auto resp = "<html lang=en><title>haxxclock</title><link crossorigin=anonymous href=https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css integrity=sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC rel=stylesheet><script crossorigin=anonymous integrity=sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM src=https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js></script><script crossorigin=anonymous integrity=\"sha256-pvPw+upLPUjgMXY0G+8O0xUf+/Im1MZjXxxgOcBQBXU=\"src=https://code.jquery.com/jquery-3.6.3.min.js></script><style>body{background:#f0f0f0}.container{max-width:100%!important}.btn-color{width:100%;height:75px;margin:0;border:2px solid #d0d0d0}.col{padding:0!important;margin:0 1 0 1}.btn-color-blk{background:#000}.btn-color-red{background:red}.btn-color-green{background:#0f0}.btn-color-blue{background:#00f}.btn-color-white{background:#fff}</style><div class=accordion id=accordionExample><div class=accordion-item><h2 class=accordion-header id=headingOne><button class=accordion-button type=button data-bs-target=#accOne data-bs-toggle=collapse>Fixed Color Grid</button></h2><div class=\"accordion-collapse collapse show\"id=accOne aria-labelledby=headingOne data-bs-parent=#accordionExample><div class=accordion-body><div class=container><div class=row><div class=col><button class=\"btn btn-color btn-color-blk\"type=button id=blk></div><div class=col><button class=\"btn btn-color btn-color-red\"type=button id=red></div><div class=col><button class=\"btn btn-color btn-color-green\"type=button id=green></div><div class=col><button class=\"btn btn-color btn-color-blue\"type=button id=blue></div><div class=col><button class=\"btn btn-color btn-color-white\"type=button id=white></div></div></div></div></div></div><div class=accordion-item><h2 class=accordion-header id=headingTwo><button class=\"accordion-button collapsed\"type=button data-bs-target=#accTwo data-bs-toggle=collapse aria-controls=accTwo aria-expanded=false>Color Picker</button></h2><div class=\"accordion-collapse collapse\"id=accTwo aria-labelledby=headingTwo data-bs-parent=#accordionExample><div class=accordion-body></div></div></div></div><script>const rgb2hex = (rgb) => `#${rgb.match(/^rgb\\((\\d+),\\s*(\\d+),\\s*(\\d+)\\)$/).slice(1).map(n => parseInt(n, 10).toString(16).padStart(2, '0')).join('')}`\n"
-            "            const regex = /(rgb\\(\\d+,[ ]*\\d+,[ ]*\\d+\\))/gm;\n"
+auto resp = "<html lang=en><meta content=\"width=device-width,initial-scale=1\"name=viewport><title>haxxclock</title><link crossorigin=anonymous href=https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css rel=stylesheet><script src=https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js crossorigin=anonymous></script><script src=https://code.jquery.com/jquery-3.6.3.min.js crossorigin=anonymous></script><script src=https://cdn.jsdelivr.net/npm/@jaames/iro@5></script><style>body{background:#f0f0f0}.container{max-width:100%!important}.btn-color{width:100%;height:75px;margin:0;border:2px solid #d0d0d0}.col{padding:0!important;margin:0 1px}.color-picker{margin:auto;display:table}</style><div class=accordion><div class=accordion-item><h2 class=accordion-header id=headingOne><button class=accordion-button data-bs-target=#accOne data-bs-toggle=collapse type=button>Fixed Color Grid</button></h2><div class=\"accordion-collapse collapse show\"id=accOne data-bs-parent=#accordionExample><div class=accordion-body><div class=container id=color-grid></div></div></div></div><div class=accordion-item><h2 class=accordion-header id=headingTwo><button class=accordion-button data-bs-target=#accTwo data-bs-toggle=collapse type=button>Color Picker</button></h2><div class=\"accordion-collapse collapse show\"id=accTwo data-bs-parent=#accordionExample><div class=accordion-body><div class=row><div class=col><div class=color-picker id=picker></div></div></div></div></div></div></div><script>let rgb2hex = (rgb) => `#${rgb.match(/^rgb\\((\\d+),\\s*(\\d+),\\s*(\\d+)\\)$/).slice(1).map(n => parseInt(n, 10).toString(16).padStart(2, '0')).join('')}`\n"
+            "    let regex = /(rgb\\(\\d+,[ ]*\\d+,[ ]*\\d+\\))/gm;\n"
             "\n"
-            "            $(document).ready(function() {\n"
-            "                $(\".btn-color\").click(function() {\n"
-            "                    let rgbColor = $(this).css(\"background\");\n"
-            "                    let hexColor = rgb2hex(rgbColor.match(regex)[0]);\n"
-            "                    $.post(\"\", { color: hexColor  });\n"
-            "                });\n"
-            "            });</script>";
+            "    $(document).ready(function () {\n"
+            "        let colors = [\n"
+            "            \"#000000\",\n"
+            "            \"#ff0000\",\n"
+            "            \"#00ff00\",\n"
+            "            \"#0000ff\",\n"
+            "            \"#ffffff\",\n"
+            "            \"#ff8000\",\n"
+            "            \"#ffff00\",\n"
+            "            \"#00ffff\",\n"
+            "            \"#ff00ff\",\n"
+            "            \"#ff007f\"\n"
+            "\n"
+            "        ];\n"
+            "\n"
+            "        for (let i = 0; i < (colors.length / 5); ++i) {\n"
+            "            let row = $('<div id=\"color-grid-one\" class=\"row\"></div>')\n"
+            "            $(\"#color-grid\").append(row)\n"
+            "\n"
+            "            for (let j = 0; j < 5; ++j) {\n"
+            "                row.append(`<div class=\"col\"><button type=\"button\" class=\"btn btn-color\" style=\"background: ${colors[5 * i + j]};\" /></div>`);\n"
+            "            }\n"
+            "        }\n"
+            "\n"
+            "        let colorPicker = new iro.ColorPicker('#picker');\n"
+            "        colorPicker.on('color:change', function (color) {\n"
+            "            $.post(\"\", {color: color.hexString.slice(1)});\n"
+            "        });\n"
+            "\n"
+            "        $(\".btn-color\").click(function () {\n"
+            "            let rgbColor = $(this).css(\"background\");\n"
+            "            let hexColor = rgb2hex(rgbColor.match(regex)[0]);\n"
+            "            $.post(\"\", {color: hexColor.slice(1)});\n"
+            "        });\n"
+            "    });</script>";
 
 esp_err_t get_handler(httpd_req_t *req)
 {
@@ -38,9 +66,11 @@ esp_err_t post_handler(httpd_req_t *req)
         return ESP_FAIL;
     }
 
-    char color[16];
-    memcpy(color, &content[9], 6); // todo: change to 16 bit
+    printf("Received: %s", content);
+    char color[7];
+    memcpy(color, &content[6], 6); // todo: change to 16 bit
     color[6] = '\0';
+    printf("Color: %s", color);
     set_color(color);
 
     httpd_resp_send(req, "", HTTPD_RESP_USE_STRLEN);
