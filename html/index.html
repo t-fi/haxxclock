@@ -2,10 +2,8 @@
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>haxxclock</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
-          crossorigin="anonymous">
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
-            crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
     <script src="https://code.jquery.com/jquery-3.6.3.min.js" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/@jaames/iro@5"></script>
     <style>
@@ -17,95 +15,65 @@
             max-width: 100% !important;
         }
 
-        .btn-color {
-            width: 100%;
-            height: 75px;
-            margin: 0;
-            border: 2px solid #d0d0d0;
-        }
-
         .col {
             padding: 0 !important;
             margin: 0 1px;
         }
 
-        .color-picker {
+        .centered {
             margin: auto;
             display: table;
         }
     </style>
 </head>
-<body>
-<div class="accordion">
-    <div class="accordion-item">
-        <h2 class="accordion-header" id="headingOne">
-            <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#accOne">
-                Fixed Color Grid
-            </button>
-        </h2>
-        <div id="accOne" class="accordion-collapse collapse show" data-bs-parent="#accordionExample">
-            <div class="accordion-body">
-                <div id="color-grid" class="container">
-                </div>
-            </div>
+<body class="bg-body">
+<div class="container">
+    <div class="row p-2 bg-dark border-bottom" style="--bs-bg-opacity: .08;">
+        <div class="col text-center">
+        <h1 class="display-6">Haxx Clock Color</h1>
         </div>
     </div>
-    <div class="accordion-item">
-        <h2 class="accordion-header" id="headingTwo">
-            <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#accTwo">
-                Color Picker
-            </button>
-        </h2>
-        <div id="accTwo" class="accordion-collapse collapse show" data-bs-parent="#accordionExample">
-            <div class="accordion-body">
-                <div class="row">
-                    <div class="col">
-                        <div id="picker" class="color-picker"></div>
-                    </div>
-                </div>
-            </div>
+    <div class="row p-2 bg-dark" style="--bs-bg-opacity: .05;">
+        <div class="col">
+            <div id="picker" class="centered"></div>
+            <input type="range" class="p-4 form-range centered" style="width: 320px;" id="slider" min=0 max=1 step="0.001">
         </div>
     </div>
 </div>
 
 <script>
-    let rgb2hex = (rgb) => `#${rgb.match(/^rgb\((\d+),\s*(\d+),\s*(\d+)\)$/).slice(1).map(n => parseInt(n, 10).toString(16).padStart(2, '0')).join('')}`
     let regex = /(rgb\(\d+,[ ]*\d+,[ ]*\d+\))/gm;
+    let colorMem = "ffffff";
+
+    let setColor = (color, brightness) => {
+        $.post("", {
+            color: color,
+            brightness: brightness
+        });
+
+        colorMem = color;
+    }
 
     $(document).ready(function () {
-        let colors = [
-            "#000000",
-            "#ff0000",
-            "#00ff00",
-            "#0000ff",
-            "#ffffff",
-            "#ff8000",
-            "#ffff00",
-            "#00ffff",
-            "#ff00ff",
-            "#ff007f"
-
-        ];
-
-        for (let i = 0; i < (colors.length / 5); ++i) {
-            let row = $('<div id="color-grid-one" class="row"></div>')
-            $("#color-grid").append(row)
-
-            for (let j = 0; j < 5; ++j) {
-                row.append(`<div class="col"><button type="button" class="btn btn-color" style="background: ${colors[5 * i + j]};" /></div>`);
+        let colorPicker = new iro.ColorPicker('#picker', {
+            layout: [{
+                component: iro.ui.Wheel               
+            }],
+            borderWidth: 3,
+            options: {
+                borderColor: "#ffffff"
             }
-        }
+        });
 
-        let colorPicker = new iro.ColorPicker('#picker');
         colorPicker.on('color:change', function (color) {
-            $.post("", {color: color.hexString.slice(1)});
+            setColor(color.hexString.slice(1),$("#slider").val());
         });
 
-        $(".btn-color").click(function () {
-            let rgbColor = $(this).css("background");
-            let hexColor = rgb2hex(rgbColor.match(regex)[0]);
-            $.post("", {color: hexColor.slice(1)});
+        $("#slider").change(function() {
+            setColor(colorMem, $("#slider").val());
         });
+
+        $("#slider").val(1);
     });
 </script>
 </body>
