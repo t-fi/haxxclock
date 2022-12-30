@@ -29,10 +29,10 @@ void set_color(char *color, double brightness) {
 
 std::vector<led_value> get_digit_frame(char digit) {
     uint8_t segments = seven_segment_ascii[(uint8_t)(digit - 32)];
-    uint8_t mask = 1;
+    uint8_t mask = 2;
     std::vector<led_value> values;
 
-    for (int i = 0; i < 8; ++i) {
+    for (int i = 0; i < 7; ++i) {
         if (segments & mask) {
             add_segment(values, 5, led_color);
         } else {
