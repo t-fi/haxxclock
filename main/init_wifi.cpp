@@ -1,6 +1,5 @@
 #include <string.h>
 #include "freertos/FreeRTOS.h"
-#include "freertos/task.h"
 #include "freertos/event_groups.h"
 #include "esp_system.h"
 #include "esp_wifi.h"
@@ -8,16 +7,10 @@
 #include "esp_log.h"
 #include "nvs_flash.h"
 
-#include "lwip/err.h"
-#include "lwip/sys.h"
 
-/* The examples use WiFi configuration that you can set via project configuration menu
-   If you'd rather not, just change the below entries to strings with
-   the config you want - ie #define EXAMPLE_WIFI_SSID "mywifissid"
-*/
-#define EXAMPLE_ESP_WIFI_SSID "Mister TC"
-#define EXAMPLE_ESP_WIFI_PASS "Gu1LdW4R5"
-#define EXAMPLE_ESP_MAXIMUM_RETRY  20
+#define WIFI_SSID ""
+#define WIFI_PASSWORD ""
+#define CONNECT_TRIES  20
 
 #if CONFIG_ESP_WIFI_AUTH_OPEN
 #define ESP_WIFI_SCAN_AUTH_MODE_THRESHOLD WIFI_AUTH_OPEN
@@ -57,7 +50,7 @@ static void event_handler(void* arg, esp_event_base_t event_base,
     if (event_base == WIFI_EVENT && event_id == WIFI_EVENT_STA_START) {
         esp_wifi_connect();
     } else if (event_base == WIFI_EVENT && event_id == WIFI_EVENT_STA_DISCONNECTED) {
-        if (s_retry_num < EXAMPLE_ESP_MAXIMUM_RETRY) {
+        if (s_retry_num < CONNECT_TRIES) {
             esp_wifi_connect();
             s_retry_num++;
             ESP_LOGI(TAG, "retry to connect to the AP");
@@ -100,14 +93,8 @@ void wifi_init_sta()
 
     wifi_config_t wifi_config = {
             .sta = {
-                    .ssid = EXAMPLE_ESP_WIFI_SSID,
-                    .password = EXAMPLE_ESP_WIFI_PASS,
-                    /* Authmode threshold resets to WPA2 as default if password matches WPA2 standards (pasword len => 8).
-                     * If you want to connect the device to deprecated WEP/WPA networks, Please set the threshold value
-                     * to WIFI_AUTH_WEP/WIFI_AUTH_WPA_PSK and set the password with length and format matching to
-                 * WIFI_AUTH_WEP/WIFI_AUTH_WPA_PSK standards.
-                     */
-//            .threshold.authmode = ESP_WIFI_SCAN_AUTH_MODE_THRESHOLD,
+                    .ssid = WIFI_SSID,
+                    .password = WIFI_PASSWORD,
                     .sae_pwe_h2e = WPA3_SAE_PWE_BOTH,
             },
     };
@@ -117,22 +104,28 @@ void wifi_init_sta()
 
     ESP_LOGI(TAG, "wifi_init_sta finished.");
 
-    /* Waiting until either the connection is established (WIFI_CONNECTED_BIT) or connection failed for the maximum
-     * number of re-tries (WIFI_FAIL_BIT). The bits are set by event_handler() (see above) */
-    EventBits_t bits = xEventGroupWaitBits(s_wifi_event_group,
-                                           WIFI_CONNECTED_BIT | WIFI_FAIL_BIT,
-                                           pdFALSE,
-                                           pdFALSE,
-                                           portMAX_DELAY);
+    EventBits_t bits = xEventGroupWaitBits(
+            s_wifi_event_group,
+            WIFI_CONNECTED_BIT | WIFI_FAIL_BIT,
+            pdFALSE,
+            pdFALSE,
+            portMAX_DELAY
+    );
 
-    /* xEventGroupWaitBits() returns the bits before the call returned, hence we can test which event actually
-     * happened. */
     if (bits & WIFI_CONNECTED_BIT) {
-        ESP_LOGI(TAG, "connected to ap SSID:%s password:%s",
-                 EXAMPLE_ESP_WIFI_SSID, EXAMPLE_ESP_WIFI_PASS);
+        ESP_LOGI(
+                TAG,
+                "connected to ap SSID:%s password:%s",
+                WIFI_SSID,
+                WIFI_PASSWORD
+        );
     } else if (bits & WIFI_FAIL_BIT) {
-        ESP_LOGI(TAG, "Failed to connect to SSID:%s, password:%s",
-                 EXAMPLE_ESP_WIFI_SSID, EXAMPLE_ESP_WIFI_PASS);
+        ESP_LOGI(
+                TAG,
+                "Failed to connect to SSID:%s, password:%s",
+                WIFI_SSID,
+                WIFI_PASSWORD
+        );
     } else {
         ESP_LOGE(TAG, "UNEXPECTED EVENT");
     }
