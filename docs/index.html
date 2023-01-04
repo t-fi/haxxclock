@@ -42,7 +42,7 @@
 
 		const seconds = h*60*60 + m*60 + s;
 		const hex_seconds = seconds / sec_per_day * hex_per_day;
-		const hex_string = Math.trunc(hex_seconds).toString(16);
+		const hex_string = Math.trunc(hex_seconds).toString(16).padStart(4, "0");
 		document.getElementById('hex_out').innerText = hex_string;
 	};
 
