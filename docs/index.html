@@ -21,3 +21,32 @@
 		document.getElementById('legacy').innerText = h + ":" + m + ":" + s;
 	};
 </script>
+
+<br>
+<br>
+
+<label for="hex">legacy to hex converter</label>
+<br>
+<input type="text" id="hour" name="hour" required minlength="0" maxlength="2" size="2">
+<label>:</label>
+<input type="text" id="minute" name="minute" required minlength="0" maxlength="2" size="2">
+<label>:</label>
+<input type="text" id="second" name="second" required minlength="0" maxlength="2" size="2">
+<br>
+<label id="hex_out"></label>
+<script type="text/javascript">
+	let handler = function () {
+		const h = parseInt(document.getElementById('hour').value);
+		const m = parseInt(document.getElementById('minute').value);
+		const s = parseInt(document.getElementById('second').value);
+
+		const seconds = h*60*60 + m*60 + s;
+		const hex_seconds = seconds / sec_per_day * hex_per_day;
+		const hex_string = Math.trunc(hex_seconds).toString(16);
+		document.getElementById('hex_out').innerText = hex_string;
+	};
+
+	document.getElementById('hour').onchange = handler;
+	document.getElementById('minute').onchange = handler;
+	document.getElementById('second').onchange = handler;
+</script>
