@@ -1,0 +1,23 @@
+<label for="hex">hex to legacy converter</label>
+<br>
+<input type="text" id="hex" name="hex" required minlength="4" maxlength="4" size="10">
+<br>
+<label id="legacy"></label>
+<script type="text/javascript">
+	const hex_per_day = 16**4;
+	const sec_per_day = 24*60*60;
+	document.getElementById('hex').onchange = function() {
+		const hex_seconds = parseInt(this.value, 16);
+		const seconds = hex_seconds / hex_per_day * sec_per_day;
+
+		const second = Math.trunc(seconds % 60);
+		const minute = Math.trunc((seconds/60) % 60);
+		const hour = Math.trunc((seconds/60/60) % 60);
+		
+		const s = String(second).padStart(2, 0);
+		const m = String(minute).padStart(2, 0);
+		const h = String(hour).padStart(2, 0);
+
+		document.getElementById('legacy').innerText = h + ":" + m + ":" + s;
+	};
+</script>
