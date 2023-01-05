@@ -1,11 +1,27 @@
+<label>Current time:</label>
+<br>
+<label id="hex_now"></label>
+<script type="text/javascript">
+	const hex_per_day = 16**4;
+	const sec_per_day = 24*60*60;
+
+	var id = setInterval(function() {
+
+		const seconds = (Date.now()/1000)%(24*60*60);
+		const hex_seconds = seconds / sec_per_day * hex_per_day;
+		const hex_string = Math.trunc(hex_seconds).toString(16).padStart(4, "0");
+		document.getElementById('hex_now').innerText = hex_string;
+	}, 100);
+</script>
+<br>
+<br>
+
 <label for="hex">hex to legacy converter</label>
 <br>
 <input type="text" id="hex" name="hex" required minlength="4" maxlength="4" size="10">
 <br>
 <label id="legacy"></label>
 <script type="text/javascript">
-	const hex_per_day = 16**4;
-	const sec_per_day = 24*60*60;
 	document.getElementById('hex').onchange = function() {
 		const hex_seconds = parseInt(this.value, 16);
 		const seconds = hex_seconds / hex_per_day * sec_per_day;
