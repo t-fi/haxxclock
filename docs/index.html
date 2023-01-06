@@ -2,12 +2,14 @@
 <br>
 <label id="hex_now"></label>
 <script type="text/javascript">
+	const timezone_offset_seconds = new Date().getTimezoneOffset() * 60;
+
 	const hex_per_day = 16**4;
 	const sec_per_day = 24*60*60;
 
 	var id = setInterval(function() {
 
-		const seconds = (Date.now()/1000)%(24*60*60);
+		const seconds = (Date.now()/1000)%(24*60*60) - timezone_offset_seconds;
 		const hex_seconds = seconds / sec_per_day * hex_per_day;
 		const hex_string = Math.trunc(hex_seconds).toString(16).padStart(4, "0");
 		document.getElementById('hex_now').innerText = hex_string;
