@@ -1,74 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD"
+      crossorigin="anonymous"
+    />
+  </head>
+  <body>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-w76AqPfDkMBDXo30jS1Sgez6pr3x5MlQ1ZAGC+nuZB+EYdgRZgiwxhTBTkF7CXvN"
+      crossorigin="anonymous"
+    ></script>
 
-<label>Current time:</label>
-<br>
-<label id="hex_now"></label>
-<script type="text/javascript">
-	const timezone_offset_seconds = new Date().getTimezoneOffset() * 60;
+    <label>Current time:</label>
+    <br />
+    <label id="hex_now"></label>
+    <script type="text/javascript">
+      const timezone_offset_seconds = new Date().getTimezoneOffset() * 60;
 
-	const hex_per_day = 16**4;
-	const sec_per_day = 24*60*60;
+      const hex_per_day = 16 ** 4;
+      const sec_per_day = 24 * 60 * 60;
 
-	var id = setInterval(function() {
+      var id = setInterval(function () {
+        const seconds =
+          (Date.now() / 1000 - timezone_offset_seconds) % (24 * 60 * 60);
+        const hex_seconds = (seconds / sec_per_day) * hex_per_day;
+        const hex_string = Math.trunc(hex_seconds)
+          .toString(16)
+          .padStart(4, "0");
+        document.getElementById("hex_now").innerText = hex_string;
+      }, 100);
+    </script>
+    <br />
+    <br />
 
-		const seconds = (Date.now()/1000 - timezone_offset_seconds)%(24*60*60);
-		const hex_seconds = seconds / sec_per_day * hex_per_day;
-		const hex_string = Math.trunc(hex_seconds).toString(16).padStart(4, "0");
-		document.getElementById('hex_now').innerText = hex_string;
-	}, 100);
-</script>
-<br>
-<br>
+    <label for="hex">hex to legacy converter</label>
+    <br />
+    <input
+      type="text"
+      id="hex"
+      name="hex"
+      required
+      minlength="4"
+      maxlength="4"
+      size="10"
+    />
+    <br />
+    <label id="legacy"></label>
+    <script type="text/javascript">
+      document.getElementById("hex").onchange = function () {
+        const hex_seconds = parseInt(this.value, 16);
+        const seconds = (hex_seconds / hex_per_day) * sec_per_day;
 
-<label for="hex">hex to legacy converter</label>
-<br>
-<input type="text" id="hex" name="hex" required minlength="4" maxlength="4" size="10">
-<br>
-<label id="legacy"></label>
-<script type="text/javascript">
-	document.getElementById('hex').onchange = function() {
-		const hex_seconds = parseInt(this.value, 16);
-		const seconds = hex_seconds / hex_per_day * sec_per_day;
+        const second = Math.trunc(seconds % 60);
+        const minute = Math.trunc((seconds / 60) % 60);
+        const hour = Math.trunc((seconds / 60 / 60) % 60);
 
-		const second = Math.trunc(seconds % 60);
-		const minute = Math.trunc((seconds/60) % 60);
-		const hour = Math.trunc((seconds/60/60) % 60);
-		
-		const s = String(second).padStart(2, 0);
-		const m = String(minute).padStart(2, 0);
-		const h = String(hour).padStart(2, 0);
+        const s = String(second).padStart(2, 0);
+        const m = String(minute).padStart(2, 0);
+        const h = String(hour).padStart(2, 0);
 
-		document.getElementById('legacy').innerText = h + ":" + m + ":" + s;
-	};
-</script>
+        document.getElementById("legacy").innerText = h + ":" + m + ":" + s;
+      };
+    </script>
 
-<br>
-<br>
+    <br />
+    <br />
 
-<label for="hex">legacy to hex converter</label>
-<br>
-<input type="text" id="hour" name="hour" required minlength="0" maxlength="2" size="2">
-<label>:</label>
-<input type="text" id="minute" name="minute" required minlength="0" maxlength="2" size="2">
-<label>:</label>
-<input type="text" id="second" name="second" required minlength="0" maxlength="2" size="2">
-<br>
-<label id="hex_out"></label>
-<script type="text/javascript">
-	let handler = function () {
-		const h = parseInt(document.getElementById('hour').value);
-		const m = parseInt(document.getElementById('minute').value);
-		const s = parseInt(document.getElementById('second').value);
+    <label for="hex">legacy to hex converter</label>
+    <br />
+    <input
+      type="text"
+      id="hour"
+      name="hour"
+      required
+      minlength="0"
+      maxlength="2"
+      size="2"
+    />
+    <label>:</label>
+    <input
+      type="text"
+      id="minute"
+      name="minute"
+      required
+      minlength="0"
+      maxlength="2"
+      size="2"
+    />
+    <label>:</label>
+    <input
+      type="text"
+      id="second"
+      name="second"
+      required
+      minlength="0"
+      maxlength="2"
+      size="2"
+    />
+    <br />
+    <label id="hex_out"></label>
+    <script type="text/javascript">
+      let handler = function () {
+        const h = parseInt(document.getElementById("hour").value);
+        const m = parseInt(document.getElementById("minute").value);
+        const s = parseInt(document.getElementById("second").value);
 
-		const seconds = h*60*60 + m*60 + s;
-		const hex_seconds = seconds / sec_per_day * hex_per_day;
-		const hex_string = Math.trunc(hex_seconds).toString(16).padStart(4, "0");
-		document.getElementById('hex_out').innerText = hex_string;
-	};
+        const seconds = h * 60 * 60 + m * 60 + s;
+        const hex_seconds = (seconds / sec_per_day) * hex_per_day;
+        const hex_string = Math.trunc(hex_seconds)
+          .toString(16)
+          .padStart(4, "0");
+        document.getElementById("hex_out").innerText = hex_string;
+      };
 
-	document.getElementById('hour').onchange = handler;
-	document.getElementById('minute').onchange = handler;
-	document.getElementById('second').onchange = handler;
-</script>
+      document.getElementById("hour").onchange = handler;
+      document.getElementById("minute").onchange = handler;
+      document.getElementById("second").onchange = handler;
+    </script>
 
-<p>The hex clock shows hexadecimal time, see:</p>
-<a href="https://en.wikipedia.org/wiki/Hexadecimal_time">https://en.wikipedia.org/wiki/Hexadecimal_time</a>
+    <p>The hex clock shows hexadecimal time, see:</p>
+    <a href="https://en.wikipedia.org/wiki/Hexadecimal_time"
+      >https://en.wikipedia.org/wiki/Hexadecimal_time</a
+    >
+  </body>
+</html>
