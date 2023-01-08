@@ -18,38 +18,57 @@
         crossorigin="anonymous"
 ></script>
 
-<p>Current time:</p>
-<label id="hex_now"></label>
+<div class="container text-center justify-content-center">
+    <div class="row">
+        <h1 class="display-1">The hex clock</h1>
+    </div>
+    <div class="row">
+        <p class="pt-lead h2">
+            Invented 150 years ago, see
+            <a href=" https://en.wikipedia.org/wiki/Hexadecimal_time" class="link-info">wiki</a>
+        </p>
+    </div>
+
+    <div class="row">
+        <p class="display-1 text-info" id="hex_now"></p>
+    </div>
+
+    <div class="row">
+        <div class="col">
+            <div class="row">
+                <label for="hex">hex to legacy converter</label>
+            </div>
+            <div class="row">
+                <input type="text" id="hex" name="hex" required minlength="4" maxlength="4" size="2"
+                       placeholder="Hex time, e.g a9bc"/>
+            </div>
+            <div class="row">
+                <p id="legacy"></p>
+            </div>
+        </div>
+        <div class="col">
+            <div class="row">
+                <label for="hour">legacy to hex converter</label>
+            </div>
+            <div class="col">
+                <input type="text" id="hour" name="hour" required minlength="0" maxlength="2" size="2"/>
+                <label>:</label>
+                <input type="text" id="minute" name="minute" required minlength="0" maxlength="2" size="2"/>
+                <label>:</label>
+                <input type="text" id="second" name="second" required minlength="0" maxlength="2" size="2"/>
+            </div>
+            <div class="row">
+                <p class="display-3 text-info" id="hex_out"></p>
+            </div>
+        </div>
+    </div>
+</div>
+
+
 <br/>
 <br/>
 
-<label for="hex">hex to legacy converter</label>
-<br/>
-<input
-        type="text" id="hex" name="hex" required minlength="4" maxlength="4" size="10"/>
-<br/>
-<label id="legacy"></label>
-
-<br/>
-<br/>
-
-<label for="hex">legacy to hex converter</label>
-<br/>
-<input
-        type="text" id="hour" name="hour" required minlength="0" maxlength="2" size="2"/>
-<label>:</label>
-<input
-        type="text" id="minute" name="minute" required minlength="0" maxlength="2" size="2"/>
-<label>:</label>
-<input
-        type="text" id="second" name="second" required minlength="0" maxlength="2" size="2"/>
-<br/>
-<label id="hex_out"></label>
 <script type="text/javascript" src="main.js"></script>
 
-<p>The hex clock shows hexadecimal time, see:</p>
-<a href="https://en.wikipedia.org/wiki/Hexadecimal_time"
->https://en.wikipedia.org/wiki/Hexadecimal_time</a
->
 </body>
 </html>
