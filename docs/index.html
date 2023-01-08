@@ -18,50 +18,54 @@
         crossorigin="anonymous"
 ></script>
 
-<div class="container text-center justify-content-center">
+<div class="container-fluid text-center justify-content-center">
     <div class="row">
-        <h1 class="display-1">The hex clock</h1>
-    </div>
-    <div class="row">
-        <p class="pt-lead h2">
-            Invented 150 years ago, see
-            <a href=" https://en.wikipedia.org/wiki/Hexadecimal_time" class="link-info">wiki</a>
-        </p>
-    </div>
+        <div class="col-auto">
+            <div class="row">
+                <h1>The hex clock</h1>
+            </div>
+            <div class="row">
+                <h6 class="pt-lead">
+                    Invented 150 years ago, see
+                    <a href=" https://en.wikipedia.org/wiki/Hexadecimal_time" class="link-info">wiki</a>
+                </h6>
+            </div>
 
-    <div class="row">
-        <p class="display-1 text-info" id="hex_now"></p>
-    </div>
+            <div class="row">
+                <p class="text-info h1" id="hex_now"></p>
+            </div>
 
-    <div class="row">
-        <!-- hex to legacy -->
-        <div class="col-2">
             <div class="row">
-                <label for="hex">hex to legacy converter</label>
-            </div>
-            <div class="row">
-                <input type="text" id="hex" name="hex" required minlength="4" maxlength="4" size="2"
-                       placeholder="Hex time, e.g a9bc"/>
-            </div>
-            <div class="row">
-                <p id="legacy"></p>
-            </div>
-        </div>
+                <!-- hex to legacy -->
+                <div class="col  gx-5">
+                    <div class="row">
+                        <label for="hex">hex to legacy</label>
+                    </div>
+                    <div class="row">
+                        <input type="text" id="hex" name="hex" required minlength="4" maxlength="4" size="2"
+                               placeholder="e.g a9bc"/>
+                    </div>
+                    <div class="row">
+                        <p id="legacy"></p>
+                    </div>
+                </div>
 
-        <!-- legacy to hex -->
-        <div class="col-2">
-            <div class="row">
-                <label for="hour">legacy to hex converter</label>
-            </div>
-            <div class="col">
-                <input type="text" id="hour" name="hour" required minlength="0" maxlength="2" size="2"/>
-                <label>:</label>
-                <input type="text" id="minute" name="minute" required minlength="0" maxlength="2" size="2"/>
-                <label>:</label>
-                <input type="text" id="second" name="second" required minlength="0" maxlength="2" size="2"/>
-            </div>
-            <div class="row">
-                <p class="display-3 text-info" id="hex_out"></p>
+                <!-- legacy to hex -->
+                <div class="col-md-auto border-start">
+                    <div class="row">
+                        <label for="hour">legacy to hex</label>
+                    </div>
+                    <div class="col">
+                        <input type="text" id="hour" name="hour" required minlength="0" maxlength="2" size="1"/>
+                        <label>:</label>
+                        <input type="text" id="minute" name="minute" required minlength="0" maxlength="2" size="1"/>
+                        <label>:</label>
+                        <input type="text" id="second" name="second" required minlength="0" maxlength="2" size="1"/>
+                    </div>
+                    <div class="row">
+                        <p class="h1 text-info" id="hex_out"></p>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
