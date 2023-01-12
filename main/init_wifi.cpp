@@ -10,6 +10,8 @@
 
 #define WIFI_SSID ""
 #define WIFI_PASSWORD ""
+#define WIFI_HOSTNAME "haxxclock"
+
 #define CONNECT_TRIES  20
 
 #if CONFIG_ESP_WIFI_AUTH_OPEN
@@ -73,8 +75,7 @@ void wifi_init_sta()
     ESP_ERROR_CHECK(esp_netif_init());
 
     ESP_ERROR_CHECK(esp_event_loop_create_default());
-    esp_netif_create_default_wifi_sta();
-
+    esp_netif_set_hostname(esp_netif_create_default_wifi_sta(), WIFI_HOSTNAME);
     wifi_init_config_t cfg = WIFI_INIT_CONFIG_DEFAULT();
     ESP_ERROR_CHECK(esp_wifi_init(&cfg));
 
