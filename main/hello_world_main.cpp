@@ -6,6 +6,7 @@
 #include "segment_frame_generator.h"
 #include "esp_wifi.h"
 #include "nvs_flash.h"
+#include "nvs_handle.hpp"
 #include "init_wifi.h"
 #include "lwip/apps/sntp.h"
 #include "http_server.h"
@@ -46,6 +47,8 @@ extern "C" void app_main(void) {
         shared_ptr<SPIDevice> spi_dev = master.create_dev(CS(5), Frequency::MHz(1));
 
         init_nvm();
+
+        init_color_from_nvs();
 
         wifi_init_sta();
 
