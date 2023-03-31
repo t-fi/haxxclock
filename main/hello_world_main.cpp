@@ -65,7 +65,7 @@ extern "C" void app_main(void) {
         printf("init clock\n");
         struct timeval tv_now;
         struct tm time_info;
-        setenv("TZ", "CEST", 1);
+        setenv("TZ", "CEST-1CEST,M3.5.0,M10.5.0/3", 1);
         tzset();
 
         printf("start main loop\n");
