@@ -48,20 +48,27 @@ extern "C" void app_main(void) {
 
         init_nvm();
 
+        printf("init color from NVS\n");
         init_color_from_nvs();
 
+        printf("init wifi\n");
         wifi_init_sta();
 
+        printf("init sntp\n");
         sntp_setoperatingmode(SNTP_OPMODE_POLL);
         sntp_setservername(0, "pool.ntp.org");
         sntp_init();
+
+        printf("init webserver\n");
         start_webserver();
 
+        printf("init clock\n");
         struct timeval tv_now;
         struct tm time_info;
-        setenv("TZ", "GMT-1", 1);
+        setenv("TZ", "CEST", 1);
         tzset();
 
+        printf("start main loop\n");
         while (true) {
             gettimeofday(&tv_now, &time_info);
             struct tm *local_time = std::localtime(&tv_now.tv_sec);
