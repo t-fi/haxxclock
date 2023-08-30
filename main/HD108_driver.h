@@ -1,4 +1,5 @@
 #pragma once
+#include <cstdint>
 
 struct led_value {
     uint16_t r, g, b;
