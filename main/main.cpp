@@ -12,7 +12,6 @@
 #include "http_server.h"
 
 using namespace idf;
-
 using namespace std;
 
 namespace {

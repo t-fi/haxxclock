@@ -1,6 +1,6 @@
 idf_component_register(
         SRCS
-        "hello_world_main.cpp"
+        "main.cpp"
         "HD108_driver.cpp"
         "segment_frame_generator.cpp"
         "init_wifi.cpp"
