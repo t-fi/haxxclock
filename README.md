@@ -24,5 +24,6 @@ For now, the wifi credentials are hardcoded in `init_wifi.cpp`, replace with you
 
 ![ESP32 Wroom Pinout Diagram](https://cdn.shopify.com/s/files/1/1509/1638/files/ESP_-_32_NodeMCU_Developmentboard_Pinout_Diagram.png?7487926392378435209)
 
-The code is configured to use the ports G23 (data) and G18 (clock) as spi lanes.
+The code is configured to use the ports `G23` (data) and `G18` (clock) as spi lanes.
 Please refer to the pinout diagram above to find the correct ports on your ESP32 board.
+Also check `main.cpp` to see the rest of the pin configuration.
