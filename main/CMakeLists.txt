@@ -5,6 +5,7 @@ idf_component_register(
         "segment_frame_generator.cpp"
         "init_wifi.cpp"
         "http_server.cpp"
+        "sunrise.cpp"
         INCLUDE_DIRS
         "")
 
