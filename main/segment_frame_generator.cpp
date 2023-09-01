@@ -8,6 +8,7 @@
 #include "segment_frame_generator.h"
 
 led_value led_color = {16536, 16536, 16536};
+bool isOn = true;
 static std::map<std::string, uint16_t &> color_name_to_ref{{"led_color_r", led_color.r},
                                                            {"led_color_g", led_color.g},
                                                            {"led_color_b", led_color.b}};
@@ -32,6 +33,10 @@ void set_color(char *color, double brightness) {
     };
 
     write_color_to_nvs();
+}
+
+void toggle_clock() {
+    isOn = !isOn;
 }
 
 void write_color_to_nvs() {
@@ -92,7 +97,7 @@ std::vector<led_value> get_digit_frame(char digit) {
     std::vector<led_value> values;
 
     for (int i = 0; i < 7; ++i) {
-        if (segments & mask) {
+        if ((segments & mask) && isOn) {
             add_segment(values, 5, led_color);
         } else {
             add_segment(values, 5, led_value{0, 0, 0});

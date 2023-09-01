@@ -53,7 +53,7 @@
     let isOn = true;
 
     function setColor(color, brightness) {
-        $.post("", {
+        $.post("/color", {
             color: color,
             brightness: brightness
         });
@@ -62,10 +62,7 @@
     }
 
     function toggle() {
-        $.post("", {
-            toggle: true
-        });
-
+        $.post("/toggle", {});
         isOn = !isOn;
     }
 
@@ -88,7 +85,7 @@
             setColor(colorMem, $("#slider").val());
         });
 
-        $("#toggle").click(function () {
+        $("#toggle").on("click", function () {
             toggle();
         });
 

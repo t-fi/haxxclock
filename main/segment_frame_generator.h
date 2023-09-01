@@ -108,6 +108,7 @@ const uint8_t seven_segment_ascii[96] = {
 };
 
 void set_color(char* color, double brightness);
+void toggle_clock();
 void write_color_to_nvs();
 void init_color_from_nvs();
 std::vector<led_value> get_digit_frame(char digit);
