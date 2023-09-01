@@ -64,14 +64,14 @@ time_t calc_sunrise(time_t cur_time, float lat, float lon, float ele) {
     float julian_date = ts2j(cur_time);
     int julian_day = date2day(julian_date);
     float mean_solar_time = julian_day - lon / 360.0;
-    float solar_mean_anomaly_deg = (int)std::ceil(357.5291 + 0.98560028 * mean_solar_time) % 360;
+    float solar_mean_anomaly_deg = (357.5291 + 0.98560028 * mean_solar_time);
     float solar_mean_anomaly_rad = radians(solar_mean_anomaly_deg);
 
     float equation_of_center_deg = center_coeff_earth * std::sin(solar_mean_anomaly_rad) +
                                    0.0200 * std::sin(2 * solar_mean_anomaly_rad) +
                                    0.0003 * std::sin(3 * solar_mean_anomaly_rad);
 
-    float ecliptic_longitude_deg = (int)std::ceil(solar_mean_anomaly_deg + equation_of_center_deg + 180.0 + arg_perihelion) % 360;
+    float ecliptic_longitude_deg = (solar_mean_anomaly_deg + equation_of_center_deg + 180.0 + arg_perihelion);
     float ecliptic_longitude_rad = radians(ecliptic_longitude_deg);
 
     float equation_of_time = 0.0053 * std::sin(solar_mean_anomaly_rad) - 0.0069 * std::sin(2 * ecliptic_longitude_rad);
