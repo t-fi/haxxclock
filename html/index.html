@@ -62,7 +62,7 @@
     }
 
     function toggle() {
-        $.post("/toggle", {});
+        $.post("/toggle", {isOn: !isOn});
         isOn = !isOn;
     }
 

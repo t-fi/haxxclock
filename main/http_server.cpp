@@ -20,7 +20,7 @@ auto resp = "<html lang=\"en\"><head><meta name=\"viewport\" content=\"width=dev
             "        colorMem = color;"
             "    }"
             "    function toggle() {"
-            "        $.post(\"/toggle\", {});"
+            "        $.post(\"/toggle\", {isOn:!isOn});"
             "        isOn = !isOn;"
             "    }"
             "    $(document).ready(function () {"
