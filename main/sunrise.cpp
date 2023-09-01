@@ -41,7 +41,7 @@ float ts2j(time_t ts) {
 /**
  * Calculates the day of the year given a julian date
  * @param j_date Julian date
- * @return Day of the year
+ * @return Julian day (days since 1.1.2000)
  */
 int date2day(float j_date) {
     return std::ceil(j_date - (2451545.0 + 0.0009) + 69.184 / 86400.0);
@@ -57,30 +57,31 @@ int date2day(float j_date) {
  * @return Sunrise time in unix timestamp
  */
 time_t calc_sunrise(time_t cur_time, float lat, float lon, float ele) {
-    printf("Current time: %lld\n", cur_time);
+    float arg_perihelion = 102.9372;
+    float earth_tilt = 23.4397;
+    float center_coeff_earth = 1.9148;
+
     float julian_date = ts2j(cur_time);
-    printf("Julian date: %f\n", julian_date);
     int julian_day = date2day(julian_date);
-    printf("Julian day: %d\n", julian_day);
-    float mean_solar_time = julian_day + 0.0009 - lon / 360.0;
-    printf("Mean solar time: %f\n", mean_solar_time);
-    float mean_solar_anomaly_deg = std::ceil(357.5291 + 0.98560028 * mean_solar_time);
-    float mean_solar_anomaly_rad = radians(mean_solar_anomaly_deg);
+    float mean_solar_time = julian_day - lon / 360.0;
+    float solar_mean_anomaly_deg = (int)std::ceil(357.5291 + 0.98560028 * mean_solar_time) % 360;
+    float solar_mean_anomaly_rad = radians(solar_mean_anomaly_deg);
 
-    float equation_of_center_deg = 1.9148 * std::sin(mean_solar_anomaly_rad) +
-                                   0.0200 * std::sin(2 * mean_solar_anomaly_rad) +
-                                   0.0003 * std::sin(3 * mean_solar_anomaly_rad);
+    float equation_of_center_deg = center_coeff_earth * std::sin(solar_mean_anomaly_rad) +
+                                   0.0200 * std::sin(2 * solar_mean_anomaly_rad) +
+                                   0.0003 * std::sin(3 * solar_mean_anomaly_rad);
 
-    float ecliptic_longitude_deg = std::ceil(mean_solar_anomaly_deg + equation_of_center_deg + 180.0 + 102.9372);
+    float ecliptic_longitude_deg = (int)std::ceil(solar_mean_anomaly_deg + equation_of_center_deg + 180.0 + arg_perihelion) % 360;
     float ecliptic_longitude_rad = radians(ecliptic_longitude_deg);
 
-    float solar_transit = 2451545.0 + mean_solar_time + 0.0053 * std::sin(mean_solar_anomaly_rad) -
-                          0.0069 * std::sin(2 * ecliptic_longitude_rad);
+    float equation_of_time = 0.0053 * std::sin(solar_mean_anomaly_rad) - 0.0069 * std::sin(2 * ecliptic_longitude_rad);
+    float solar_transit = 2451545.0 + mean_solar_time + equation_of_time;
 
-    float sin_declination = std::sin(ecliptic_longitude_rad) * std::sin(radians(23.4397));
+    float sin_declination = std::sin(ecliptic_longitude_rad) * std::sin(radians(earth_tilt));
     float cos_declination = std::cos(std::asin(sin_declination));
 
-    float hour_angle_deg = (std::sin(radians(-0.833 - 2.076 * std::sqrt(ele) / 60.0)) - std::sin(radians(lat)) * sin_declination) /
+    float ele_correction = 2.076 * std::sqrt(ele) / 60.0;
+    float hour_angle_deg = (std::sin(radians(-0.833 - ele_correction)) - std::sin(radians(lat)) * sin_declination) /
             (std::cos(radians(lat)) * cos_declination);
     float w0;
 
@@ -90,7 +91,7 @@ time_t calc_sunrise(time_t cur_time, float lat, float lon, float ele) {
         return 0;
     }
 
-    float sunrise_time = solar_transit - degrees(w0) / 360.0;
-    printf("Sunrise time: %f\n", sunrise_time);
+    float sunrise_time = solar_transit - (degrees(w0) / 360.0);
+    printf("Sunrise time [julian]: %f\n", sunrise_time);
     return j2ts(sunrise_time);
 }
