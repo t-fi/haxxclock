@@ -110,7 +110,7 @@ std::vector<led_value> get_digit_frame(char digit) {
 }
 
 std::vector<led_value> get_clock_frame(struct tm *time, suseconds_t microseconds) {
-    printf("human time: %d:%d:%d.%d\n", time->tm_hour, time->tm_min, time->tm_sec, microseconds);
+//    printf("human time: %d:%d:%d.%d\n", time->tm_hour, time->tm_min, time->tm_sec, microseconds);
     float sec_of_day = (float) (time->tm_hour * 3600 + time->tm_min * 60 + time->tm_sec) + microseconds * 1e-6;
 //    printf("seconds of day: %f\n", sec_of_day);
     uint32_t hex_sec_of_day = sec_of_day / 1.318359375;
@@ -123,7 +123,7 @@ std::vector<led_value> get_clock_frame(struct tm *time, suseconds_t microseconds
     char hex_maxime = buffer[1];
     char hex_hour = buffer[0];
 
-    printf("hex time: %c:%c:%c:%c\n", hex_hour, hex_maxime, hex_min, hex_sec);
+//    printf("hex time: %c:%c:%c:%c\n", hex_hour, hex_maxime, hex_min, hex_sec);
 
     std::vector<led_value> hex_sec_values = get_digit_frame(hex_sec);
     std::vector<led_value> hex_min_values = get_digit_frame(hex_min);
