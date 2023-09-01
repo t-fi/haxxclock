@@ -13,7 +13,7 @@ A clock from haxxors for haxxors with ❤️
    cd ..
    ```
 3. The IDF requires certain paths, set by sourcing the `export.sh` script. Keep this in mind when opening a new terminal. An IDE like CLion needs to know the IDF as well, specifically `$PATH` and `$IDF_PATH` need to be copied from a terminal.
-4. Add the current user to the `dialout` linux group:
+4. Add the current user to the `dialout` linux group (to access the serial port):
    1. `sudo usermod -a -G dialout $USER`
    2. reboot
 
@@ -27,3 +27,11 @@ For now, the wifi credentials are hardcoded in `init_wifi.cpp`, replace with you
 The code is configured to use the ports `G23` (data) and `G18` (clock) as spi lanes.
 Please refer to the pinout diagram above to find the correct ports on your ESP32 board.
 Also check `main.cpp` to see the rest of the pin configuration.
+
+## Trouble Shooting
+
+### Haxx Clock does not display anything
+
+- Check if the clock and data lanes are connected correctly
+- Check if the correct wifi credentials are set in `init_wifi.cpp`
+  - If there is no wifi connection, the clock will not display anything as it is unable to complete the startup sequence
